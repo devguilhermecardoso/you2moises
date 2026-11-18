@@ -1,23 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You2Moises — YouTube para MP3 & Moises.ai</title>
+  <title>You2Moises — YouTube to MP3 & Moises.ai</title>
   <style>
-    :root {
+    :root,
+    [data-theme="dark"] {
       --bg: #0b0e14;
       --card: #131822;
       --card-border: #222b3b;
       --input-bg: #0d1119;
       --text: #f1f5f9;
       --muted: #94a3b8;
+      --placeholder: #526077;
       --accent: #00e5a3;
       --accent-hover: #00c98f;
+      --accent-text: #061311;
       --secondary: #1e293b;
+      --secondary-hover: #28354b;
       --danger: #ef4444;
       --warning: #f59e0b;
       --info: #38bdf8;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --divider: rgba(255, 255, 255, 0.06);
+      --progress-bg: #1e293b;
+    }
+
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --card-border: #e2e8f0;
+      --input-bg: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --placeholder: #94a3b8;
+      --accent: #00c48c;
+      --accent-hover: #00ab7a;
+      --accent-text: #ffffff;
+      --secondary: #e2e8f0;
+      --secondary-hover: #cbd5e1;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --info: #0284c7;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --divider: rgba(15, 23, 42, 0.08);
+      --progress-bg: #e2e8f0;
     }
 
     * {
@@ -35,10 +63,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     .container {
-      max-width: 860px;
+      max-width: 880px;
       width: 100%;
       margin: 0 auto;
     }
@@ -77,6 +106,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .brand h1 {
@@ -99,7 +129,6 @@
 
     .author-pill:hover {
       background: rgba(56, 189, 248, 0.22);
-      color: #fff;
     }
 
     .brand p {
@@ -110,21 +139,28 @@
 
     .header-actions {
       display: flex;
-      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 16px;
+      gap: 7px;
+      padding: 10px 14px;
       border-radius: 10px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 600;
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.15s ease;
+    }
+
+    .btn-icon-toggle {
+      padding: 9px 12px;
+      font-size: 0.85rem;
     }
 
     .btn:disabled {
@@ -134,7 +170,7 @@
 
     .btn-primary {
       background: var(--accent);
-      color: #061311;
+      color: var(--accent-text);
     }
 
     .btn-primary:hover:not(:disabled) {
@@ -149,12 +185,12 @@
     }
 
     .btn-secondary:hover:not(:disabled) {
-      background: #28354b;
+      background: var(--secondary-hover);
     }
 
     .btn-outline-add {
       width: 100%;
-      background: rgba(0, 229, 163, 0.06);
+      background: rgba(0, 229, 163, 0.07);
       color: var(--accent);
       border: 1px dashed rgba(0, 229, 163, 0.45);
       padding: 12px;
@@ -164,7 +200,7 @@
     }
 
     .btn-outline-add:hover:not(:disabled) {
-      background: rgba(0, 229, 163, 0.12);
+      background: rgba(0, 229, 163, 0.14);
       border-color: var(--accent);
     }
 
@@ -174,7 +210,8 @@
       border-radius: 16px;
       padding: 24px;
       margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      box-shadow: var(--shadow);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
     .card-header {
@@ -197,7 +234,8 @@
       color: var(--accent);
       padding: 5px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(0, 229, 163, 0.25);
+      border: 1px solid rgba(0, 229, 163, 0.28);
+      font-weight: 600;
     }
 
     .songs-list {
@@ -211,7 +249,7 @@
       border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 12px 14px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background-color 0.2s;
     }
 
     .song-row:focus-within {
@@ -225,12 +263,12 @@
 
     .song-row.status-done {
       border-color: var(--accent);
-      background: rgba(0, 229, 163, 0.04);
+      background: rgba(0, 229, 163, 0.05);
     }
 
     .song-row.status-error {
       border-color: var(--danger);
-      background: rgba(239, 68, 68, 0.05);
+      background: rgba(239, 68, 68, 0.06);
     }
 
     .song-row-main {
@@ -263,7 +301,7 @@
     }
 
     .url-input::placeholder {
-      color: #526077;
+      color: var(--placeholder);
     }
 
     .btn-remove {
@@ -289,7 +327,7 @@
     .song-status-bar {
       margin-top: 10px;
       padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid var(--divider);
       display: none;
       flex-direction: column;
       gap: 6px;
@@ -318,7 +356,7 @@
 
     .status-done .status-msg {
       color: var(--accent);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .status-error .status-msg {
@@ -328,7 +366,7 @@
     .progress-track {
       width: 100%;
       height: 5px;
-      background: #1e293b;
+      background: var(--progress-bg);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -428,11 +466,11 @@
     }
 
     footer {
-      max-width: 860px;
+      max-width: 880px;
       width: 100%;
       margin: 16px auto 0;
       padding-top: 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid var(--divider);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -461,15 +499,21 @@
         <div>
           <div class="brand-title-row">
             <h1>You2Moises</h1>
-            <a href="https://github.com/devguilhermecardoso" target="_blank" rel="noopener noreferrer" class="author-pill">
+            <a href="https://github.com/devguilhermecardoso" target="_blank" rel="noopener noreferrer" class="author-pill" id="authorPill">
               por Guilherme Cardoso
             </a>
           </div>
-          <p>Baixe músicas do YouTube em MP3 e importe automaticamente para o Moises</p>
+          <p id="headerSubtitle">Baixe músicas do YouTube em MP3 e importe automaticamente para o Moises</p>
         </div>
       </div>
       <div class="header-actions">
-        <button id="btnMoisesLogin" class="btn btn-secondary" title="Abre o navegador com sua sessão salva do Moises Studio">
+        <button id="btnLangToggle" class="btn btn-secondary btn-icon-toggle" title="Switch language / Mudar idioma">
+          🇺🇸 EN
+        </button>
+        <button id="btnThemeToggle" class="btn btn-secondary btn-icon-toggle" title="Alternar tema claro/escuro">
+          ☀️
+        </button>
+        <button id="btnMoisesLogin" class="btn btn-secondary">
           🔗 Abrir / Conectar Moises
         </button>
         <button id="btnOpenFolder" class="btn btn-secondary">
@@ -480,8 +524,8 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Lista de Músicas do YouTube</span>
-        <span class="badge-info">Envio em 2º Plano • Play (Separação Padrão)</span>
+        <span class="card-title" id="queueCardTitle">Lista de Músicas do YouTube</span>
+        <span class="badge-info" id="queueBadgeInfo">Envio em 2º Plano • Play (Separação Padrão)</span>
       </div>
 
       <div id="songsList" class="songs-list"></div>
@@ -493,7 +537,7 @@
       <div class="controls-footer">
         <label class="checkbox-label">
           <input type="checkbox" id="chkUploadMoises" checked />
-          <span>Importar automaticamente para o Moises após gerar o MP3</span>
+          <span id="chkUploadLabel">Importar automaticamente para o Moises após gerar o MP3</span>
         </label>
 
         <div style="display: flex; gap: 10px;">
@@ -509,30 +553,125 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Arquivos MP3 Gerados Recentemente</span>
-        <button id="btnClearHistory" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; display: none; color: #f87171; border-color: rgba(239, 68, 68, 0.35);">
+        <span class="card-title" id="historyCardTitle">Arquivos MP3 Gerados Recentemente</span>
+        <button id="btnClearHistory" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; display: none; color: var(--danger); border-color: rgba(239, 68, 68, 0.35);">
           🗑️ Limpar Histórico
         </button>
       </div>
       <div id="filesList" class="files-list">
-        <div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>
+        <div class="empty-msg" id="emptyFilesMsg">Nenhum arquivo MP3 baixado ainda.</div>
       </div>
     </div>
   </div>
 
   <footer>
     <div>
-      <strong>You2Moises</strong> — Desenvolvido por
+      <strong>You2Moises</strong> — <span id="footerDevBy">Desenvolvido por</span>
       <a href="https://github.com/devguilhermecardoso" target="_blank" rel="noopener noreferrer">
         Guilherme Cardoso (@devguilhermecardoso)
       </a>
     </div>
-    <div>
+    <div id="footerTagline">
       Feito para músicos • YouTube → MP3 → Moises.ai
     </div>
   </footer>
 
   <script>
+    const I18N = {
+      pt: {
+        authorPill: 'por Guilherme Cardoso',
+        headerSubtitle: 'Baixe músicas do YouTube em MP3 e importe automaticamente para o Moises',
+        langToggleBtn: '🇺🇸 EN',
+        moisesLoginBtn: '🔗 Abrir / Conectar Moises',
+        moisesOpeningBtn: 'Abrindo Moises...',
+        openFolderBtn: '📂 Pasta de MP3',
+        queueCardTitle: 'Lista de Músicas do YouTube',
+        queueBadgeInfo: 'Envio em 2º Plano • Play (Separação Padrão)',
+        urlPlaceholder: 'Cole aqui o link do YouTube (ex: https://www.youtube.com/watch?v=...)',
+        removeRowTitle: 'Remover linha',
+        waitingStatus: 'Aguardando...',
+        addRowBtn: '+ Adicionar mais uma música',
+        chkUploadLabel: 'Importar automaticamente para o Moises após gerar o MP3',
+        clearFinishedBtn: 'Limpar Concluídas',
+        startBtnUpload: '🚀 Baixar MP3 e Enviar para o Moises',
+        startBtnDownloadOnly: '⬇️ Apenas Baixar MP3',
+        historyCardTitle: 'Arquivos MP3 Gerados Recentemente',
+        clearHistoryBtn: '🗑️ Limpar Histórico',
+        emptyFilesMsg: 'Nenhum arquivo MP3 baixado ainda.',
+        sendToMoisesBtn: '🚀 Enviar para o Moises',
+        downloadBtn: 'Baixar',
+        removeFileTitle: 'Remover este MP3',
+        footerDevBy: 'Desenvolvido por',
+        footerTagline: 'Feito para músicos • YouTube → MP3 → Moises.ai',
+        alertAddOneLink: 'Adicione pelo menos um link do YouTube para processar!',
+        confirmClearHistory: 'Deseja limpar todo o histórico e remover os arquivos MP3 da pasta downloads?',
+        errOpenMoises: 'Erro ao abrir Moises: ',
+        errClearHistory: 'Erro ao limpar histórico: ',
+        errRemoveFile: 'Erro ao remover arquivo: ',
+        errSendFile: 'Erro ao enviar arquivo.',
+      },
+      en: {
+        authorPill: 'by Guilherme Cardoso',
+        headerSubtitle: 'Download YouTube songs as MP3 and automatically import them into Moises',
+        langToggleBtn: '🇧🇷 PT',
+        moisesLoginBtn: '🔗 Open / Connect Moises',
+        moisesOpeningBtn: 'Opening Moises...',
+        openFolderBtn: '📂 MP3 Folder',
+        queueCardTitle: 'YouTube Songs Queue',
+        queueBadgeInfo: 'Background Upload • Play (Default Separation)',
+        urlPlaceholder: 'Paste YouTube link here (e.g. https://www.youtube.com/watch?v=...)',
+        removeRowTitle: 'Remove row',
+        waitingStatus: 'Waiting...',
+        addRowBtn: '+ Add another song',
+        chkUploadLabel: 'Automatically import to Moises after generating MP3',
+        clearFinishedBtn: 'Clear Completed',
+        startBtnUpload: '🚀 Download MP3 & Send to Moises',
+        startBtnDownloadOnly: '⬇️ Download MP3 Only',
+        historyCardTitle: 'Recently Generated MP3 Files',
+        clearHistoryBtn: '🗑️ Clear History',
+        emptyFilesMsg: 'No MP3 files downloaded yet.',
+        sendToMoisesBtn: '🚀 Send to Moises',
+        downloadBtn: 'Download',
+        removeFileTitle: 'Remove this MP3',
+        footerDevBy: 'Developed by',
+        footerTagline: 'Built for musicians • YouTube → MP3 → Moises.ai',
+        alertAddOneLink: 'Please add at least one YouTube link to process!',
+        confirmClearHistory: 'Do you want to clear the entire history and delete all MP3 files from the downloads folder?',
+        errOpenMoises: 'Error opening Moises: ',
+        errClearHistory: 'Error clearing history: ',
+        errRemoveFile: 'Error removing file: ',
+        errSendFile: 'Error sending file.',
+      },
+    };
+
+    let currentLang = localStorage.getItem('y2m_lang') || 'pt';
+    let currentTheme = localStorage.getItem('y2m_theme') || 'dark';
+
+    function t(key) {
+      return (I18N[currentLang] && I18N[currentLang][key]) || I18N.pt[key] || key;
+    }
+
+    function translateServerMessage(msg) {
+      if (!msg || currentLang === 'pt') return msg;
+      return msg
+        .replace('Iniciando download do YouTube...', 'Starting YouTube download...')
+        .replace('Buscando informações do vídeo no YouTube...', 'Fetching video info from YouTube...')
+        .replace(/Baixando e convertendo "(.+)" para MP3\.\.\./, 'Downloading and converting "$1" to MP3...')
+        .replace(/Baixando áudio \((.+)\)\.\.\./, 'Downloading audio ($1)...')
+        .replace('Convertendo para MP3 com FFmpeg...', 'Converting to MP3 with FFmpeg...')
+        .replace(/MP3 já disponível localmente \("(.+)"\)\./, 'MP3 already available locally ("$1").')
+        .replace('MP3 pronto! Abrindo Moises para enviar (Separação Padrão)...', 'MP3 ready! Uploading to Moises (Default Separation)...')
+        .replace('Conectando ao Moises em segundo plano...', 'Connecting to Moises in background...')
+        .replace('Abrindo "Separar faixas" no Play em segundo plano...', 'Opening "Track Separation" in Play (background)...')
+        .replace('Importando arquivo MP3 no Moises...', 'Importing MP3 file into Moises...')
+        .replace('Confirmando separação padrão e enviando para sua biblioteca...', 'Confirming default separation and uploading to your library...')
+        .replace('Finalizando envio do arquivo para a nuvem do Moises...', 'Finishing upload to Moises cloud...')
+        .replace('Concluído! Música enviada para o Moises com separação padrão.', 'Done! Song uploaded to Moises with default separation.')
+        .replace('MP3 baixado com sucesso!', 'MP3 downloaded successfully!')
+        .replace('Abrindo Moises para enviar...', 'Connecting to Moises to upload...')
+        .replace('Enviado para o Moises!', 'Uploaded to Moises!');
+    }
+
     const songsListEl = document.getElementById('songsList');
     const btnAddRow = document.getElementById('btnAddRow');
     const btnStart = document.getElementById('btnStart');
@@ -541,10 +680,59 @@
     const btnMoisesLogin = document.getElementById('btnMoisesLogin');
     const btnOpenFolder = document.getElementById('btnOpenFolder');
     const btnClearHistory = document.getElementById('btnClearHistory');
+    const btnLangToggle = document.getElementById('btnLangToggle');
+    const btnThemeToggle = document.getElementById('btnThemeToggle');
     const filesListEl = document.getElementById('filesList');
 
     let rowCounter = 0;
     let isRunning = false;
+    let cachedFiles = [];
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('y2m_theme', theme);
+      btnThemeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.setAttribute('lang', lang === 'en' ? 'en' : 'pt-BR');
+      localStorage.setItem('y2m_lang', lang);
+
+      document.getElementById('authorPill').textContent = t('authorPill');
+      document.getElementById('headerSubtitle').textContent = t('headerSubtitle');
+      btnLangToggle.textContent = t('langToggleBtn');
+      btnMoisesLogin.textContent = t('moisesLoginBtn');
+      btnOpenFolder.textContent = t('openFolderBtn');
+      document.getElementById('queueCardTitle').textContent = t('queueCardTitle');
+      document.getElementById('queueBadgeInfo').textContent = t('queueBadgeInfo');
+      btnAddRow.textContent = t('addRowBtn');
+      document.getElementById('chkUploadLabel').textContent = t('chkUploadLabel');
+      btnClearFinished.textContent = t('clearFinishedBtn');
+      btnStart.textContent = chkUploadMoises.checked ? t('startBtnUpload') : t('startBtnDownloadOnly');
+      document.getElementById('historyCardTitle').textContent = t('historyCardTitle');
+      btnClearHistory.textContent = t('clearHistoryBtn');
+      document.getElementById('footerDevBy').textContent = t('footerDevBy');
+      document.getElementById('footerTagline').textContent = t('footerTagline');
+
+      songsListEl.querySelectorAll('.url-input').forEach((inp) => {
+        inp.placeholder = t('urlPlaceholder');
+      });
+      songsListEl.querySelectorAll('.btn-remove').forEach((btn) => {
+        btn.title = t('removeRowTitle');
+      });
+
+      renderFilesList(cachedFiles);
+    }
+
+    btnThemeToggle.addEventListener('click', () => {
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    btnLangToggle.addEventListener('click', () => {
+      applyLanguage(currentLang === 'pt' ? 'en' : 'pt');
+    });
 
     function updateRowIndices() {
       const rows = songsListEl.querySelectorAll('.song-row');
@@ -569,15 +757,15 @@
           <input
             type="url"
             class="url-input"
-            placeholder="Cole aqui o link do YouTube (ex: https://www.youtube.com/watch?v=...)"
+            placeholder="${t('urlPlaceholder')}"
             value="${initialUrl.replace(/"/g, '&quot;')}"
           />
-          <button type="button" class="btn-remove" title="Remover linha">✕</button>
+          <button type="button" class="btn-remove" title="${t('removeRowTitle')}">✕</button>
         </div>
         <div class="song-status-bar">
           <div class="status-top">
             <span class="song-title-label"></span>
-            <span class="status-msg">Aguardando...</span>
+            <span class="status-msg">${t('waitingStatus')}</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill"></div>
@@ -633,8 +821,8 @@
 
     chkUploadMoises.addEventListener('change', () => {
       btnStart.textContent = chkUploadMoises.checked
-        ? '🚀 Baixar MP3 e Enviar para o Moises'
-        : '⬇️ Apenas Baixar MP3';
+        ? t('startBtnUpload')
+        : t('startBtnDownloadOnly');
     });
 
     btnAddRow.addEventListener('click', () => {
@@ -656,14 +844,14 @@
 
     btnMoisesLogin.addEventListener('click', async () => {
       btnMoisesLogin.disabled = true;
-      btnMoisesLogin.textContent = 'Abrindo Moises...';
+      btnMoisesLogin.textContent = t('moisesOpeningBtn');
       try {
         await fetch('/api/moises-login', { method: 'POST' });
       } catch (err) {
-        alert('Erro ao abrir Moises: ' + err.message);
+        alert(t('errOpenMoises') + err.message);
       } finally {
         btnMoisesLogin.disabled = false;
-        btnMoisesLogin.textContent = '🔗 Abrir / Conectar Moises';
+        btnMoisesLogin.textContent = t('moisesLoginBtn');
       }
     });
 
@@ -672,14 +860,14 @@
     });
 
     btnClearHistory.addEventListener('click', async () => {
-      if (!confirm('Deseja limpar todo o histórico e remover os arquivos MP3 da pasta downloads?')) {
+      if (!confirm(t('confirmClearHistory'))) {
         return;
       }
       try {
         await fetch('/api/files', { method: 'DELETE' });
         loadDownloadedFiles();
       } catch (err) {
-        alert('Erro ao limpar histórico: ' + err.message);
+        alert(t('errClearHistory') + err.message);
       }
     });
 
@@ -688,7 +876,7 @@
         await fetch('/api/files/' + encodeURIComponent(fileName), { method: 'DELETE' });
         loadDownloadedFiles();
       } catch (err) {
-        alert('Erro ao remover arquivo: ' + err.message);
+        alert(t('errRemoveFile') + err.message);
       }
     };
 
@@ -701,58 +889,63 @@
         });
         const data = await res.json();
         if (!res.ok) {
-          alert(data.error || 'Erro ao enviar arquivo.');
+          alert(data.error || t('errSendFile'));
         }
       } catch (err) {
-        alert('Erro: ' + err.message);
+        alert('Error: ' + err.message);
       }
     };
+
+    function renderFilesList(files) {
+      cachedFiles = files || [];
+      if (!cachedFiles.length) {
+        btnClearHistory.style.display = 'none';
+        filesListEl.innerHTML = `<div class="empty-msg">${t('emptyFilesMsg')}</div>`;
+        return;
+      }
+      btnClearHistory.style.display = 'inline-flex';
+      filesListEl.innerHTML = cachedFiles
+        .map(
+          (f) => `
+        <div class="file-item" data-filename="${f.name.replace(/"/g, '&quot;')}">
+          <div class="file-meta">
+            <span>🎵</span>
+            <span class="file-name" title="${f.name}">${f.name}</span>
+            <span class="file-size">(${f.sizeMB} MB)</span>
+          </div>
+          <div class="file-actions">
+            <span class="file-status-text"></span>
+            <button
+              type="button"
+              class="btn btn-primary btn-send-moises"
+              style="padding: 6px 12px; font-size: 0.82rem;"
+              onclick="sendExistingFileToMoises(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
+            >
+              ${t('sendToMoisesBtn')}
+            </button>
+            <a href="/downloads/${encodeURIComponent(f.name)}" download class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; text-decoration: none;">
+              ${t('downloadBtn')}
+            </a>
+            <button
+              type="button"
+              class="btn-remove"
+              title="${t('removeFileTitle')}"
+              onclick="deleteSingleFile(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+    }
 
     async function loadDownloadedFiles() {
       try {
         const res = await fetch('/api/files');
         const data = await res.json();
-        if (!data.files || data.files.length === 0) {
-          btnClearHistory.style.display = 'none';
-          filesListEl.innerHTML = '<div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>';
-          return;
-        }
-        btnClearHistory.style.display = 'inline-flex';
-        filesListEl.innerHTML = data.files
-          .map(
-            (f) => `
-          <div class="file-item" data-filename="${f.name.replace(/"/g, '&quot;')}">
-            <div class="file-meta">
-              <span>🎵</span>
-              <span class="file-name" title="${f.name}">${f.name}</span>
-              <span class="file-size">(${f.sizeMB} MB)</span>
-            </div>
-            <div class="file-actions">
-              <span class="file-status-text"></span>
-              <button
-                type="button"
-                class="btn btn-primary btn-send-moises"
-                style="padding: 6px 12px; font-size: 0.82rem;"
-                onclick="sendExistingFileToMoises(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
-              >
-                🚀 Enviar para o Moises
-              </button>
-              <a href="/downloads/${encodeURIComponent(f.name)}" download class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; text-decoration: none;">
-                Baixar
-              </a>
-              <button
-                type="button"
-                class="btn-remove"
-                title="Remover este MP3"
-                onclick="deleteSingleFile(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        `
-          )
-          .join('');
+        renderFilesList(data.files || []);
       } catch (_) {}
     }
 
@@ -766,13 +959,13 @@
           const statusEl = item.querySelector('.file-status-text');
           const btnEl = item.querySelector('.btn-send-moises');
           if (statusEl) {
-            statusEl.textContent = data.message || '';
+            statusEl.textContent = translateServerMessage(data.message || '');
             statusEl.style.color =
               data.status === 'done'
-                ? '#00e5a3'
+                ? 'var(--accent)'
                 : data.status === 'error'
-                ? '#ef4444'
-                : '#38bdf8';
+                ? 'var(--danger)'
+                : 'var(--info)';
           }
           if (btnEl) {
             btnEl.disabled = data.status === 'uploading';
@@ -799,7 +992,7 @@
         titleLabel.textContent = data.title;
       }
       if (data.message) {
-        statusMsg.textContent = data.message;
+        statusMsg.textContent = translateServerMessage(data.message);
       }
 
       if (data.status === 'downloading') {
@@ -812,7 +1005,7 @@
         loadDownloadedFiles();
       } else if (data.status === 'error') {
         progressFill.style.width = '100%';
-        progressFill.style.background = '#ef4444';
+        progressFill.style.background = 'var(--danger)';
       }
     });
 
@@ -840,7 +1033,7 @@
       }
 
       if (items.length === 0) {
-        alert('Adicione pelo menos um link do YouTube para processar!');
+        alert(t('alertAddOneLink'));
         return;
       }
 
@@ -860,7 +1053,7 @@
         });
         const result = await res.json();
         if (!res.ok) {
-          throw new Error(result.error || 'Falha ao iniciar fila.');
+          throw new Error(result.error || 'Failed to start queue.');
         }
       } catch (err) {
         alert(err.message);
@@ -872,7 +1065,9 @@
       }
     });
 
+    applyTheme(currentTheme);
     createSongRow();
+    applyLanguage(currentLang);
     loadDownloadedFiles();
   </script>
 </body>
