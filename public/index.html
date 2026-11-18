@@ -510,6 +510,9 @@
     <div class="card">
       <div class="card-header">
         <span class="card-title">Arquivos MP3 Gerados Recentemente</span>
+        <button id="btnClearHistory" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; display: none; color: #f87171; border-color: rgba(239, 68, 68, 0.35);">
+          🗑️ Limpar Histórico
+        </button>
       </div>
       <div id="filesList" class="files-list">
         <div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>
@@ -537,6 +540,7 @@
     const chkUploadMoises = document.getElementById('chkUploadMoises');
     const btnMoisesLogin = document.getElementById('btnMoisesLogin');
     const btnOpenFolder = document.getElementById('btnOpenFolder');
+    const btnClearHistory = document.getElementById('btnClearHistory');
     const filesListEl = document.getElementById('filesList');
 
     let rowCounter = 0;
@@ -667,6 +671,27 @@
       fetch('/api/open-folder', { method: 'POST' });
     });
 
+    btnClearHistory.addEventListener('click', async () => {
+      if (!confirm('Deseja limpar todo o histórico e remover os arquivos MP3 da pasta downloads?')) {
+        return;
+      }
+      try {
+        await fetch('/api/files', { method: 'DELETE' });
+        loadDownloadedFiles();
+      } catch (err) {
+        alert('Erro ao limpar histórico: ' + err.message);
+      }
+    });
+
+    window.deleteSingleFile = async function(fileName) {
+      try {
+        await fetch('/api/files/' + encodeURIComponent(fileName), { method: 'DELETE' });
+        loadDownloadedFiles();
+      } catch (err) {
+        alert('Erro ao remover arquivo: ' + err.message);
+      }
+    };
+
     window.sendExistingFileToMoises = async function(fileName) {
       try {
         const res = await fetch('/api/upload-existing', {
@@ -688,9 +713,11 @@
         const res = await fetch('/api/files');
         const data = await res.json();
         if (!data.files || data.files.length === 0) {
+          btnClearHistory.style.display = 'none';
           filesListEl.innerHTML = '<div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>';
           return;
         }
+        btnClearHistory.style.display = 'inline-flex';
         filesListEl.innerHTML = data.files
           .map(
             (f) => `
@@ -713,6 +740,14 @@
               <a href="/downloads/${encodeURIComponent(f.name)}" download class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; text-decoration: none;">
                 Baixar
               </a>
+              <button
+                type="button"
+                class="btn-remove"
+                title="Remover este MP3"
+                onclick="deleteSingleFile(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
+              >
+                ✕
+              </button>
             </div>
           </div>
         `

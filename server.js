@@ -58,6 +58,33 @@ app.get('/api/files', (req, res) => {
   }
 });
 
+app.delete('/api/files', (req, res) => {
+  try {
+    if (fs.existsSync(DOWNLOADS_DIR)) {
+      const files = fs.readdirSync(DOWNLOADS_DIR).filter((f) => f.toLowerCase().endsWith('.mp3'));
+      for (const f of files) {
+        fs.unlinkSync(path.join(DOWNLOADS_DIR, f));
+      }
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/files/:fileName', (req, res) => {
+  try {
+    const safeName = path.basename(req.params.fileName);
+    const fullPath = path.join(DOWNLOADS_DIR, safeName);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+    }
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/open-folder', (req, res) => {
   exec(`explorer "${DOWNLOADS_DIR}"`);
   res.json({ ok: true });
