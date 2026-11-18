@@ -1,0 +1,30 @@
+{
+  "name": "you2moises",
+  "version": "1.0.0",
+  "description": "You2Moises - Automação para converter músicas do YouTube em MP3 e importar automaticamente para o Moises.ai",
+  "main": "server.js",
+  "author": "Guilherme Cardoso <devguilhermecardoso@gmail.com> (https://github.com/devguilhermecardoso)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devguilhermecardoso/you2moises.git"
+  },
+  "keywords": [
+    "youtube",
+    "moises",
+    "mp3",
+    "music",
+    "stems",
+    "automation",
+    "playwright",
+    "yt-dlp"
+  ],
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ffmpeg-static": "^5.2.0",
+    "playwright-core": "^1.50.0"
+  }
+}

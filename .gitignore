@@ -1,0 +1,7 @@
+node_modules/
+moises-session/
+downloads/
+bin/
+server.log
+src/startServerDesktop.ps1
+*.zip

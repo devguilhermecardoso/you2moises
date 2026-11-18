@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You2Moises — YouTube para MP3 & Moises.ai</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card: #131822;
+      --card-border: #222b3b;
+      --input-bg: #0d1119;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #00e5a3;
+      --accent-hover: #00c98f;
+      --secondary: #1e293b;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .container {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #00e5a3, #0099ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #061018;
+      box-shadow: 0 4px 20px rgba(0, 229, 163, 0.25);
+    }
+
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand h1 {
+      font-size: 1.55rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .author-pill {
+      font-size: 0.75rem;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--info);
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .author-pill:hover {
+      background: rgba(56, 189, 248, 0.22);
+      color: #fff;
+    }
+
+    .brand p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #061311;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+      color: var(--text);
+      border-color: var(--card-border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #28354b;
+    }
+
+    .btn-outline-add {
+      width: 100%;
+      background: rgba(0, 229, 163, 0.06);
+      color: var(--accent);
+      border: 1px dashed rgba(0, 229, 163, 0.45);
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+    }
+
+    .btn-outline-add:hover:not(:disabled) {
+      background: rgba(0, 229, 163, 0.12);
+      border-color: var(--accent);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .badge-info {
+      font-size: 0.8rem;
+      background: rgba(0, 229, 163, 0.12);
+      color: var(--accent);
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 229, 163, 0.25);
+    }
+
+    .songs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .song-row {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .song-row:focus-within {
+      border-color: var(--accent);
+    }
+
+    .song-row.status-downloading,
+    .song-row.status-uploading {
+      border-color: var(--info);
+    }
+
+    .song-row.status-done {
+      border-color: var(--accent);
+      background: rgba(0, 229, 163, 0.04);
+    }
+
+    .song-row.status-error {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    .song-row-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .row-index {
+      min-width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--secondary);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .url-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.96rem;
+      outline: none;
+      padding: 6px 4px;
+    }
+
+    .url-input::placeholder {
+      color: #526077;
+    }
+
+    .btn-remove {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.15s;
+    }
+
+    .btn-remove:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .song-status-bar {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+
+    .song-status-bar.visible {
+      display: flex;
+    }
+
+    .status-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .song-title-label {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .status-msg {
+      color: var(--muted);
+    }
+
+    .status-done .status-msg {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .status-error .status-msg {
+      color: var(--danger);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: #1e293b;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00e5a3, #38bdf8);
+      transition: width 0.25s ease;
+    }
+
+    .controls-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .files-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .file-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .file-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+
+    .file-size {
+      color: var(--muted);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .file-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-status-text {
+      font-size: 0.8rem;
+      color: var(--info);
+    }
+
+    .empty-msg {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    footer {
+      max-width: 860px;
+      width: 100%;
+      margin: 16px auto 0;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">Y2M</div>
+        <div>
+          <div class="brand-title-row">
+            <h1>You2Moises</h1>
+            <a href="https://github.com/devguilhermecardoso" target="_blank" rel="noopener noreferrer" class="author-pill">
+              por Guilherme Cardoso
+            </a>
+          </div>
+          <p>Baixe músicas do YouTube em MP3 e importe automaticamente para o Moises</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnMoisesLogin" class="btn btn-secondary" title="Abre o navegador com sua sessão salva do Moises Studio">
+          🔗 Abrir / Conectar Moises
+        </button>
+        <button id="btnOpenFolder" class="btn btn-secondary">
+          📂 Pasta de MP3
+        </button>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Lista de Músicas do YouTube</span>
+        <span class="badge-info">Envio em 2º Plano • Play (Separação Padrão)</span>
+      </div>
+
+      <div id="songsList" class="songs-list"></div>
+
+      <button id="btnAddRow" class="btn btn-outline-add">
+        + Adicionar mais uma música
+      </button>
+
+      <div class="controls-footer">
+        <label class="checkbox-label">
+          <input type="checkbox" id="chkUploadMoises" checked />
+          <span>Importar automaticamente para o Moises após gerar o MP3</span>
+        </label>
+
+        <div style="display: flex; gap: 10px;">
+          <button id="btnClearFinished" class="btn btn-secondary" style="display: none;">
+            Limpar Concluídas
+          </button>
+          <button id="btnStart" class="btn btn-primary">
+            🚀 Baixar MP3 e Enviar para o Moises
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Arquivos MP3 Gerados Recentemente</span>
+      </div>
+      <div id="filesList" class="files-list">
+        <div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <strong>You2Moises</strong> — Desenvolvido por
+      <a href="https://github.com/devguilhermecardoso" target="_blank" rel="noopener noreferrer">
+        Guilherme Cardoso (@devguilhermecardoso)
+      </a>
+    </div>
+    <div>
+      Feito para músicos • YouTube → MP3 → Moises.ai
+    </div>
+  </footer>
+
+  <script>
+    const songsListEl = document.getElementById('songsList');
+    const btnAddRow = document.getElementById('btnAddRow');
+    const btnStart = document.getElementById('btnStart');
+    const btnClearFinished = document.getElementById('btnClearFinished');
+    const chkUploadMoises = document.getElementById('chkUploadMoises');
+    const btnMoisesLogin = document.getElementById('btnMoisesLogin');
+    const btnOpenFolder = document.getElementById('btnOpenFolder');
+    const filesListEl = document.getElementById('filesList');
+
+    let rowCounter = 0;
+    let isRunning = false;
+
+    function updateRowIndices() {
+      const rows = songsListEl.querySelectorAll('.song-row');
+      rows.forEach((row, idx) => {
+        row.querySelector('.row-index').textContent = `#${idx + 1}`;
+        const removeBtn = row.querySelector('.btn-remove');
+        removeBtn.disabled = isRunning || rows.length === 1;
+      });
+    }
+
+    function createSongRow(initialUrl = '') {
+      rowCounter++;
+      const rowId = `song-${Date.now()}-${rowCounter}`;
+
+      const row = document.createElement('div');
+      row.className = 'song-row';
+      row.dataset.id = rowId;
+
+      row.innerHTML = `
+        <div class="song-row-main">
+          <div class="row-index">#1</div>
+          <input
+            type="url"
+            class="url-input"
+            placeholder="Cole aqui o link do YouTube (ex: https://www.youtube.com/watch?v=...)"
+            value="${initialUrl.replace(/"/g, '&quot;')}"
+          />
+          <button type="button" class="btn-remove" title="Remover linha">✕</button>
+        </div>
+        <div class="song-status-bar">
+          <div class="status-top">
+            <span class="song-title-label"></span>
+            <span class="status-msg">Aguardando...</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+      `;
+
+      const input = row.querySelector('.url-input');
+      const removeBtn = row.querySelector('.btn-remove');
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (!isRunning) {
+            const newInput = createSongRow();
+            newInput.focus();
+          }
+        }
+      });
+
+      input.addEventListener('paste', (e) => {
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        if (text && text.includes('\n')) {
+          const lines = text
+            .split(/\r?\n/)
+            .map((l) => l.trim())
+            .filter(Boolean);
+          if (lines.length > 1) {
+            e.preventDefault();
+            input.value = lines[0];
+            for (let i = 1; i < lines.length; i++) {
+              createSongRow(lines[i]);
+            }
+          }
+        }
+      });
+
+      removeBtn.addEventListener('click', () => {
+        if (isRunning) return;
+        const allRows = songsListEl.querySelectorAll('.song-row');
+        if (allRows.length > 1) {
+          row.remove();
+          updateRowIndices();
+        } else {
+          input.value = '';
+        }
+      });
+
+      songsListEl.appendChild(row);
+      updateRowIndices();
+      return input;
+    }
+
+    chkUploadMoises.addEventListener('change', () => {
+      btnStart.textContent = chkUploadMoises.checked
+        ? '🚀 Baixar MP3 e Enviar para o Moises'
+        : '⬇️ Apenas Baixar MP3';
+    });
+
+    btnAddRow.addEventListener('click', () => {
+      if (isRunning) return;
+      const input = createSongRow();
+      input.focus();
+    });
+
+    btnClearFinished.addEventListener('click', () => {
+      if (isRunning) return;
+      const doneRows = songsListEl.querySelectorAll('.song-row.status-done');
+      doneRows.forEach((r) => r.remove());
+      if (songsListEl.querySelectorAll('.song-row').length === 0) {
+        createSongRow();
+      }
+      updateRowIndices();
+      btnClearFinished.style.display = 'none';
+    });
+
+    btnMoisesLogin.addEventListener('click', async () => {
+      btnMoisesLogin.disabled = true;
+      btnMoisesLogin.textContent = 'Abrindo Moises...';
+      try {
+        await fetch('/api/moises-login', { method: 'POST' });
+      } catch (err) {
+        alert('Erro ao abrir Moises: ' + err.message);
+      } finally {
+        btnMoisesLogin.disabled = false;
+        btnMoisesLogin.textContent = '🔗 Abrir / Conectar Moises';
+      }
+    });
+
+    btnOpenFolder.addEventListener('click', () => {
+      fetch('/api/open-folder', { method: 'POST' });
+    });
+
+    window.sendExistingFileToMoises = async function(fileName) {
+      try {
+        const res = await fetch('/api/upload-existing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(data.error || 'Erro ao enviar arquivo.');
+        }
+      } catch (err) {
+        alert('Erro: ' + err.message);
+      }
+    };
+
+    async function loadDownloadedFiles() {
+      try {
+        const res = await fetch('/api/files');
+        const data = await res.json();
+        if (!data.files || data.files.length === 0) {
+          filesListEl.innerHTML = '<div class="empty-msg">Nenhum arquivo MP3 baixado ainda.</div>';
+          return;
+        }
+        filesListEl.innerHTML = data.files
+          .map(
+            (f) => `
+          <div class="file-item" data-filename="${f.name.replace(/"/g, '&quot;')}">
+            <div class="file-meta">
+              <span>🎵</span>
+              <span class="file-name" title="${f.name}">${f.name}</span>
+              <span class="file-size">(${f.sizeMB} MB)</span>
+            </div>
+            <div class="file-actions">
+              <span class="file-status-text"></span>
+              <button
+                type="button"
+                class="btn btn-primary btn-send-moises"
+                style="padding: 6px 12px; font-size: 0.82rem;"
+                onclick="sendExistingFileToMoises(${JSON.stringify(f.name).replace(/"/g, '&quot;')})"
+              >
+                🚀 Enviar para o Moises
+              </button>
+              <a href="/downloads/${encodeURIComponent(f.name)}" download class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.82rem; text-decoration: none;">
+                Baixar
+              </a>
+            </div>
+          </div>
+        `
+          )
+          .join('');
+      } catch (_) {}
+    }
+
+    const evtSource = new EventSource('/api/events');
+
+    evtSource.addEventListener('file-upload-update', (e) => {
+      const data = JSON.parse(e.data);
+      const items = filesListEl.querySelectorAll('.file-item');
+      items.forEach((item) => {
+        if (item.dataset.filename === data.fileName) {
+          const statusEl = item.querySelector('.file-status-text');
+          const btnEl = item.querySelector('.btn-send-moises');
+          if (statusEl) {
+            statusEl.textContent = data.message || '';
+            statusEl.style.color =
+              data.status === 'done'
+                ? '#00e5a3'
+                : data.status === 'error'
+                ? '#ef4444'
+                : '#38bdf8';
+          }
+          if (btnEl) {
+            btnEl.disabled = data.status === 'uploading';
+          }
+        }
+      });
+    });
+
+    evtSource.addEventListener('item-update', (e) => {
+      const data = JSON.parse(e.data);
+      const row = songsListEl.querySelector(`.song-row[data-id="${data.id}"]`);
+      if (!row) return;
+
+      row.classList.remove('status-downloading', 'status-uploading', 'status-done', 'status-error');
+      row.classList.add(`status-${data.status}`);
+
+      const statusBar = row.querySelector('.song-status-bar');
+      const titleLabel = row.querySelector('.song-title-label');
+      const statusMsg = row.querySelector('.status-msg');
+      const progressFill = row.querySelector('.progress-fill');
+
+      statusBar.classList.add('visible');
+      if (data.title) {
+        titleLabel.textContent = data.title;
+      }
+      if (data.message) {
+        statusMsg.textContent = data.message;
+      }
+
+      if (data.status === 'downloading') {
+        progressFill.style.width = `${data.percent ? Math.min(data.percent, 90) : 25}%`;
+      } else if (data.status === 'uploading') {
+        progressFill.style.width = '92%';
+      } else if (data.status === 'done') {
+        progressFill.style.width = '100%';
+        btnClearFinished.style.display = 'inline-flex';
+        loadDownloadedFiles();
+      } else if (data.status === 'error') {
+        progressFill.style.width = '100%';
+        progressFill.style.background = '#ef4444';
+      }
+    });
+
+    evtSource.addEventListener('batch-complete', () => {
+      isRunning = false;
+      btnStart.disabled = false;
+      btnAddRow.disabled = false;
+      songsListEl.querySelectorAll('.url-input').forEach((inp) => (inp.disabled = false));
+      updateRowIndices();
+      loadDownloadedFiles();
+    });
+
+    btnStart.addEventListener('click', async () => {
+      if (isRunning) return;
+
+      const rows = Array.from(songsListEl.querySelectorAll('.song-row'));
+      const items = [];
+
+      for (const row of rows) {
+        const input = row.querySelector('.url-input');
+        const url = input.value.trim();
+        if (url && !row.classList.contains('status-done')) {
+          items.push({ id: row.dataset.id, url });
+        }
+      }
+
+      if (items.length === 0) {
+        alert('Adicione pelo menos um link do YouTube para processar!');
+        return;
+      }
+
+      isRunning = true;
+      btnStart.disabled = true;
+      btnAddRow.disabled = true;
+      songsListEl.querySelectorAll('.url-input, .btn-remove').forEach((el) => (el.disabled = true));
+
+      try {
+        const res = await fetch('/api/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items,
+            uploadMoises: chkUploadMoises.checked,
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.error || 'Falha ao iniciar fila.');
+        }
+      } catch (err) {
+        alert(err.message);
+        isRunning = false;
+        btnStart.disabled = false;
+        btnAddRow.disabled = false;
+        songsListEl.querySelectorAll('.url-input').forEach((inp) => (inp.disabled = false));
+        updateRowIndices();
+      }
+    });
+
+    createSongRow();
+    loadDownloadedFiles();
+  </script>
+</body>
+</html>
