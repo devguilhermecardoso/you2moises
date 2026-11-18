@@ -9,6 +9,8 @@
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![Author](https://img.shields.io/badge/author-Guilherme%20Cardoso-00e5a3)
 
+### ⬇️ [BAIXAR YOU2MOISES (.ZIP) / DIRECT DOWNLOAD (.ZIP)](https://github.com/devguilhermecardoso/you2moises/archive/refs/heads/main.zip)
+
 🌐 **[Português (BR)](#-sobre-o-projeto-pt-br)** | **[English (EN)](#-about-the-project-en)**
 
 ---
